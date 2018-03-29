@@ -2,3 +2,6 @@
 /__pycache__/*
 *.un~
 *.swp
+*.*~
+/tests/.pytest_cache/*
+/tests/__pycache__/*
