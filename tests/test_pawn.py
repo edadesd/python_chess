@@ -61,9 +61,8 @@ def same_side_pawn(test_pawn):
     return same_side_pawn
 
 
-class TestPawn:
-
-    # Placement Tests
+# Placement Tests
+class TestPawnPlace:
 
     def test_place_pawn(self, test_board):
         """
@@ -105,7 +104,9 @@ class TestPawn:
             self.place_bad_space(test_pawn)
         assert "The target is not a Space." in str(info)
 
-    # Movement Tests
+
+# Movement Tests
+class TestPawnMove:
 
     def test_move_pawn(self, test_board, test_pawn):
 
@@ -281,7 +282,9 @@ class TestPawn:
             self.move_backward_black(test_board, test_pawn)
         assert "not move backward" in str(info)
 
-    # Capturing Tests
+
+# Capturing Tests
+class TestPawnCapture:
 
     def test_capture_opposing_piece_left(self, test_board, test_pawn, opposing_pawn):
         assert test_board
