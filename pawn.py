@@ -96,8 +96,26 @@ class Pawn(Piece):
         else:
             raise super().IllegalMoveException("That piece is not on the board.")
 
-    def capture(self, board, target):
-        pass
+    def capture(self, target):
+        if self.current_space:
+            current_rank = self.current_space.rank
+            current_file = self.current_space.file
+
+            direction = 0
+            if self.color is PieceColor.WHITE:
+                direction = Direction.UP.value
+            else:
+                direction = Direction.DOWN.value
+
+            # Pawns must capture one space ahead and one space to either the left or the right.
+            if (direction * (target.rank - current_rank)) == 1 and abs(ord(target.file) - ord(current_file)) == 1:
+                super().capture(target)
+
+            else:
+                raise IllegalMoveException("A Pawn may only capture one space ahead diagonally.")
+
+        else:
+            raise IllegalMoveException("That piece is not on the board.")
 
     def promote(self, board, target):
         pass

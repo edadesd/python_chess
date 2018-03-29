@@ -304,7 +304,7 @@ class TestPawnCapture:
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        white_test_pawn.capture(test_board, target_space)
+        white_test_pawn.capture(target_space)
 
         # Check that the test Pawn is now in the opposing Pawn's space
         assert white_test_pawn.current_space is target_space
@@ -330,7 +330,7 @@ class TestPawnCapture:
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        white_test_pawn.capture(test_board, target_space)
+        white_test_pawn.capture(target_space)
 
         # Check that the test Pawn is on the opposing Pawn's previous Space
         assert white_test_pawn.current_space is target_space
@@ -350,12 +350,12 @@ class TestPawnCapture:
 
         # Place the opposing Pawn one space in front of and one space to the left of the test Pawn
         target_file = chr(ord(black_test_pawn.current_space.file) - 1)
-        target_rank = chr(ord(black_test_pawn.current_space.rank) - 1)
+        target_rank = black_test_pawn.current_space.rank - 1
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        black_test_pawn.capture(test_board, target_space)
+        black_test_pawn.capture(target_space)
 
         # Check that the test Pawn is on the opposing Pawn's previous Space
         assert black_test_pawn.current_space is target_space
@@ -375,12 +375,12 @@ class TestPawnCapture:
 
         # Place the opposing Pawn one space in front of and one space to the right of the test Pawn
         target_file = chr(ord(black_test_pawn.current_space.file) + 1)
-        target_rank = chr(ord(black_test_pawn.current_space.rank) - 1)
+        target_rank = black_test_pawn.current_space.rank - 1
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        black_test_pawn.capture(test_board, target_space)
+        black_test_pawn.capture(target_space)
 
         # Check that the test Pawn is on the opposing Pawn's previous Space
         assert black_test_pawn.current_space is target_space
