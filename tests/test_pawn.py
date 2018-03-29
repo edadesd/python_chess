@@ -29,7 +29,7 @@ def test_board():
 
 
 @pytest.fixture
-def test_pawn(test_board):
+def white_test_pawn(test_board):
     assert test_board
 
     starting_space = test_board.get_space("e", 2)
@@ -42,23 +42,19 @@ def test_pawn(test_board):
 
     return test_pawn
 
-
 @pytest.fixture
-def opposing_pawn(test_pawn):
+def black_test_pawn(test_board):
     assert test_board
 
-    opposing_pawn = Pawn(-(test_pawn.color.value))
-    assert opposing_pawn
-    return opposing_pawn
+    starting_space = test_board.get_space("e", 7)
+    test_pawn = Pawn(PieceColor.BLACK)
 
+    test_pawn.place(starting_space)
 
-@pytest.fixture
-def same_side_pawn(test_pawn):
-    assert test_board
+    assert test_pawn
+    assert test_pawn.current_space == starting_space
 
-    same_side_pawn = Pawn(test_pawn.color)
-    assert same_side_pawn
-    return same_side_pawn
+    return test_pawn
 
 
 # Placement Tests
@@ -95,266 +91,275 @@ class TestPawnPlace:
         assert test_pawn.current_space is target_space
         assert test_pawn.moved is False
 
-    def place_bad_space(self, test_pawn):
+    def place_bad_space(self, white_test_pawn):
         bad_space = None
-        test_pawn.place(bad_space)
+        white_test_pawn.place(bad_space)
 
-    def test_place_bad_space(self, test_pawn):
+    def test_place_bad_space(self, white_test_pawn):
         with pytest.raises(IllegalPlacementException) as info:
-            self.place_bad_space(test_pawn)
+            self.place_bad_space(white_test_pawn)
         assert "The target is not a Space." in str(info)
+
+# Removal Tests
+class TestRemovePawn:
+
+    def test_remove_pawn(self, test_board, white_test_pawn):
+        assert white_test_pawn
+        assert white_test_pawn.current_space
+
+        original_space = white_test_pawn.current_space
+        white_test_pawn.remove()
+
+        assert not white_test_pawn.current_space
+        assert not original_space.current_piece
+
 
 
 # Movement Tests
 class TestPawnMove:
 
-    def test_move_pawn(self, test_board, test_pawn):
+    def test_move_pawn(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
+        assert white_test_pawn
+        assert white_test_pawn.color is PieceColor.WHITE
 
-        starting_space = test_pawn.current_space
+        starting_space = white_test_pawn.current_space
         starting_rank = starting_space.rank
         starting_file = starting_space.file
 
         # Move the Pawn two spaces forward
         first_move_space = test_board.get_space(starting_file, starting_rank + 2)
         assert first_move_space
-        test_pawn.move(test_board, first_move_space)
+        white_test_pawn.move(test_board, first_move_space)
 
         # Check that the Pawn is on the expected space
-        current_space = test_pawn.current_space
+        current_space = white_test_pawn.current_space
         assert current_space.rank == starting_rank + 2
         assert current_space.file == starting_file
 
         # Check that the Pawn is treated as having moved
-        assert test_pawn.moved is True
+        assert white_test_pawn.moved is True
 
         # Move the pawn one space forward
         second_move_space = test_board.get_space(starting_file, starting_rank + 3)
         assert second_move_space
-        test_pawn.move(test_board, second_move_space)
+        white_test_pawn.move(test_board, second_move_space)
 
         # Check that the Pawn is on the expected space
-        current_space = test_pawn.current_space
+        current_space = white_test_pawn.current_space
         assert current_space.rank == starting_rank + 3
         assert current_space.file == starting_file
 
-    def move_two_spaces_twice(self, test_board, test_pawn):
+    def move_two_spaces_twice(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
+        assert white_test_pawn
 
         # Move the Pawn two spaces
 
-        starting_space = test_pawn.current_space
+        starting_space = white_test_pawn.current_space
         target_file = starting_space.file
         target_rank = starting_space.rank + 2
         target_space = test_board.get_space(target_file, target_rank)
 
-        test_pawn.move(test_board, target_space)
+        white_test_pawn.move(test_board, target_space)
 
         # Check that the Pawn cannot move two more spaces
-        illegal_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 2)
-        test_pawn.move(test_board, illegal_space)
+        illegal_space = test_board.get_space(white_test_pawn.current_space.file, white_test_pawn.current_space.rank + 2)
+        white_test_pawn.move(test_board, illegal_space)
 
-    def test_enforce_one_square(self, test_board, test_pawn):
+    def test_enforce_one_square(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_two_spaces_twice(test_board, test_pawn)
+            self.move_two_spaces_twice(test_board, white_test_pawn)
         assert "A Pawn may only move two Spaces on its first move." in str(info)
 
-    def move_different_file(self, test_board, test_pawn):
+    def move_different_file(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
+        assert white_test_pawn
 
-        starting_space = test_pawn.current_space
+        starting_space = white_test_pawn.current_space
         target_file = chr(ord(starting_space.file) + 1)
         illegal_space = test_board.get_space(target_file, starting_space.rank + 1)
 
         # Check that the Pawn cannot go to a different file with an ordinary move
-        test_pawn.move(test_board, illegal_space)
+        white_test_pawn.move(test_board, illegal_space)
 
-    def test_enforce_move_same_file(self, test_board, test_pawn):
+    def test_enforce_move_same_file(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_different_file(test_board, test_pawn)
+            self.move_different_file(test_board, white_test_pawn)
         assert "A Pawn may not move to a different file unless capturing." in str(info)
 
-    def move_too_many_squares(self, test_board, test_pawn, num_moves):
+    def move_too_many_squares(self, test_board, white_test_pawn, num_moves):
 
         assert test_board
-        assert test_pawn
+        assert white_test_pawn
         assert isinstance(num_moves, int)
 
-        starting_space = test_pawn.current_space
+        starting_space = white_test_pawn.current_space
         target_file = starting_space.file
 
         # Check that the Pawn cannot move more than two spaces.
         target_rank = starting_space.rank + num_moves
         target_space = test_board.get_space(target_file, target_rank)
-        test_pawn.move(test_board, target_space)
+        white_test_pawn.move(test_board, target_space)
 
-    def test_enforce_max_move_length(self, test_board, test_pawn):
+    def test_enforce_max_move_length(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
             for moves in range(3, 7):
-                self.move_too_many_squares(test_board, test_pawn, moves)
+                self.move_too_many_squares(test_board, white_test_pawn, moves)
         assert "A Pawn may never move more than two Spaces at a time." in str(info)
 
-    def move_onto_occupied_square(self, test_board, test_pawn, occupying_pawn):
+    def move_onto_occupied_square(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank < MAX_RANK
-        assert occupying_pawn
+        assert white_test_pawn
 
         # Place a piece directly in front of the test Pawn
-        occupying_pawn_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 1)
+        occupying_pawn = Pawn(-(white_test_pawn.color.value))
+        occupying_pawn_space = test_board.get_space(white_test_pawn.current_space.file,
+                                                    white_test_pawn.current_space.rank + 1)
         occupying_pawn.place(occupying_pawn_space)
 
         # Try to move the test Pawn into the space of the other piece
-        target_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 1)
-        test_pawn.move(test_board, target_space)
+        target_space = test_board.get_space(white_test_pawn.current_space.file, white_test_pawn.current_space.rank + 1)
+        white_test_pawn.move(test_board, target_space)
 
-    def test_enforce_no_move_into_occupied_by_opponent(self, test_board, test_pawn, opposing_pawn):
+    def test_enforce_no_move_into_occupied(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_onto_occupied_square(test_board, test_pawn, opposing_pawn)
+            self.move_onto_occupied_square(test_board, white_test_pawn)
         assert "Target space not empty." in str(info)
 
-    def test_enforce_no_move_into_occupied_by_same(self, test_board, test_pawn, same_side_pawn):
-        with pytest.raises(IllegalMoveException) as info:
-            self.move_onto_occupied_square(test_board, test_pawn, same_side_pawn)
-        assert "Target space not empty." in str(info)
-
-    def move_over_occupied_square(self, test_board, test_pawn, occupying_pawn):
+    def move_over_occupied_square(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank < MAX_RANK - 1
-        assert occupying_pawn
+        assert white_test_pawn
+        assert white_test_pawn.current_space.rank < MAX_RANK - 1
+
+        occupying_pawn = Pawn(-(white_test_pawn.color.value))
 
         # Place a piece two squares in front of the test Pawn
-        occupying_pawn_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 1)
+        occupying_pawn_space = test_board.get_space(white_test_pawn.current_space.file,
+                                                    white_test_pawn.current_space.rank + 1)
         occupying_pawn.place(occupying_pawn_space)
 
         # Try to move the test Pawn into the space behind the other piece
-        target_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 2)
-        test_pawn.move(test_board, target_space)
+        target_space = test_board.get_space(white_test_pawn.current_space.file, white_test_pawn.current_space.rank + 2)
+        white_test_pawn.move(test_board, target_space)
 
-    def test_enforce_no_move_over_opponent_occupied(self, test_board, test_pawn, opposing_pawn):
+    def test_enforce_no_move_over_occupied(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_over_occupied_square(test_board, test_pawn, opposing_pawn)
-        assert "may not jump" in str(info)
+            self.move_over_occupied_square(test_board, white_test_pawn)
+        assert "A Pawn may not jump over any other piece" in str(info)
 
-    def test_enforce_no_move_over_same_occupied(self, test_board, test_pawn, same_side_pawn):
-        with pytest.raises(IllegalMoveException) as info:
-            self.move_over_occupied_square(test_board, test_pawn, same_side_pawn)
-        assert "may not jump" in str(info)
-
-
-    def move_backward_white(self, test_board, test_pawn):
+    def move_backward_white(self, test_board, white_test_pawn):
 
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank > MIN_RANK
+        assert white_test_pawn
+        assert white_test_pawn.current_space.rank > MIN_RANK
 
         #  Try to move the test Pawn backward one Space
-        target_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank - 1)
-        test_pawn.move(test_board, target_space)
+        target_space = test_board.get_space(white_test_pawn.current_space.file, white_test_pawn.current_space.rank - 1)
+        white_test_pawn.move(test_board, target_space)
 
-    def test_enforce_no_backward_move_white(self, test_board, test_pawn):
+    def test_enforce_no_backward_move_white(self, test_board, white_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_backward_white(test_board, test_pawn)
+            self.move_backward_white(test_board, white_test_pawn)
         assert "not move backward" in str(info)
 
-    def move_backward_black(self, test_board, test_pawn):
+    def move_backward_black(self, test_board, black_test_pawn):
 
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank < MAX_RANK
-        test_pawn.color = PieceColor.BLACK
+        assert black_test_pawn
+        assert black_test_pawn.current_space.rank < MAX_RANK
 
         # Try to move the test Pawn backward one Space
-        target_space = test_board.get_space(test_pawn.current_space.file, test_pawn.current_space.rank + 1)
-        test_pawn.move(test_board, target_space)
+        target_space = test_board.get_space(black_test_pawn.current_space.file, black_test_pawn.current_space.rank + 1)
+        black_test_pawn.move(test_board, target_space)
 
-    def test_enforce_no_backward_move_black(self, test_board, test_pawn):
+    def test_enforce_no_backward_move_black(self, test_board, black_test_pawn):
         with pytest.raises(IllegalMoveException) as info:
-            self.move_backward_black(test_board, test_pawn)
+            self.move_backward_black(test_board, black_test_pawn)
         assert "not move backward" in str(info)
 
 
 # Capturing Tests
 class TestPawnCapture:
 
-    def test_capture_opposing_piece_left(self, test_board, test_pawn, opposing_pawn):
+    def test_white_capture_opposing_piece_left(self, test_board, white_test_pawn):
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank < MAX_RANK
+        assert white_test_pawn
+        assert white_test_pawn.current_space.rank < MAX_RANK
+
+        opposing_pawn = Pawn(-(white_test_pawn.color.value))
         assert opposing_pawn
 
         # Place the opposing Pawn one space in front of and one space to the left of the test Pawn
-        target_file = chr(ord(test_pawn.current_space.file) - 1)
-        target_rank = test_pawn.current_space.rank + 1
+        target_file = chr(ord(white_test_pawn.current_space.file) - 1)
+        target_rank = white_test_pawn.current_space.rank + 1
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        test_pawn.capture(test_board, target_space)
+        white_test_pawn.capture(test_board, target_space)
 
         # Check that the test Pawn is now in the opposing Pawn's space
-        assert test_pawn.current_space is target_space
+        assert white_test_pawn.current_space is target_space
 
         # Check that the opposing Pawn is off the board
         assert opposing_pawn.current_space is None
 
         # Check that the test Pawn is its Space's current piece
-        assert target_space.current_piece is test_pawn
+        assert target_space.current_piece is white_test_pawn
 
-    def test_capture_opposing_piece_right(self, test_board, test_pawn, opposing_pawn):
+    def test_white_capture_opposing_piece_right(self, test_board, white_test_pawn):
         assert test_board
-        assert test_pawn
-        assert test_pawn.current_space.rank < MAX_RANK
+        assert white_test_pawn
+        assert white_test_pawn.current_space.rank < MAX_RANK
+
+        opposing_pawn = Pawn(-(white_test_pawn.color.value))
         assert opposing_pawn
 
         # Place the opposing Pawn one space in front of and one space to the right of the test Pawn
-        target_file = chr(ord(test_pawn.current_space.file) + 1)
-        target_rank = test_pawn.current_space.rank + 1
+        target_file = chr(ord(white_test_pawn.current_space.file) + 1)
+        target_rank = white_test_pawn.current_space.rank + 1
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
         # Capture the opposing Pawn with the test Pawn
-        test_pawn.capture(test_board, target_space)
+        white_test_pawn.capture(test_board, target_space)
 
         # Check that the test Pawn is on the opposing Pawn's previous Space
-        assert test_pawn.current_space is target_space
+        assert white_test_pawn.current_space is target_space
 
         # Check that the opposing Pawn has been removed from the board
         assert opposing_pawn.current_space is None
 
         # Check that the test Pawn is its Space's current piece
-        assert target_space.current_piece is test_pawn
+        assert target_space.current_piece is white_test_pawn
 
-    def test_capture_test_pawn_left(self, test_board, test_pawn, opposing_pawn):
+    def test_capture_test_pawn_left(self, test_board, white_test_pawn):
         assert test_board
-        assert test_pawn
-        assert opposing_pawn
+        assert white_test_pawn
 
-        capture_space = test_pawn.current_space
+        opposing_pawn = Pawn(-(white_test_pawn.color.value))
+        capture_space = white_test_pawn.current_space
 
         # Place the opposing Pawn one space in front of and one space to the left of the test Pawn
-        target_file = chr(ord(test_pawn.current_space.file) - 1)
-        target_rank = test_pawn.current_space.rank - 1
+        target_file = chr(ord(white_test_pawn.current_space.file) - 1)
+        target_rank = white_test_pawn.current_space.rank - 1
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
         # Capture the test pawn with the opposing Pawn
-        opposing_pawn.capture(test_board, test_pawn.current_space)
+        opposing_pawn.capture(test_board, white_test_pawn.current_space)
 
         # Check that the opposing Pawn is on the test Pawn's previous Space
         assert opposing_pawn.current_space is capture_space
 
         # Check that the test Pawn is off the board
-        assert test_pawn.current_space is None
+        assert white_test_pawn.current_space is None
 
         # Check that the opposing Pawn is its Space's current peice
         assert capture_space.current_piece is opposing_pawn
