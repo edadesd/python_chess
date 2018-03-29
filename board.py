@@ -1,3 +1,13 @@
+"""
+Board class
+Defines an 8x8 board divided into alternating
+light and dark-color squares. Each square
+has its column identified with a letter from
+a-h and its row identified with a number from
+1-8. The Board object is composed of one
+Space object for each square.
+"""
+
 from enum import Enum
 
 
@@ -19,6 +29,8 @@ class Space:
     def __init__(self, file, rank):
 
         if(rank in RANKS) and (file in FILES):
+            # Keeping rank and file separate allows identification without
+            # parsing the input.
             self.rank = rank
             self.file = file
             self.name = file + str(rank)

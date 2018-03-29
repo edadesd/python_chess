@@ -1,3 +1,17 @@
+"""
+Piece class
+General behavior common to all pieces, includes
+moving, capturing, placement on the board, and removal from
+the board. The individual piece classes (which inherit from this)
+are responsible for enforcing their piece rules in their move and capture
+methods. If the subclass move or capture method determines the
+move or capture is legal, it should end with calling the move or
+capture method from this class, and pass it the target.
+
+Last modified: 3/29/2018
+Author: Daniel Edades
+"""
+
 from enum import Enum
 from board import Space
 

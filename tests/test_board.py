@@ -1,3 +1,12 @@
+"""
+Tests for the Board class to ensure that
+a Board is created properly when constructed
+with Board().
+
+Last Modified: 3/29/2018
+Author: Daniel Edades
+"""
+
 import sys
 import pytest
 sys.path.append("..")

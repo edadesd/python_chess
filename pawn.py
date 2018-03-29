@@ -1,3 +1,23 @@
+"""
+Pawn class
+Pawns start on the second rank of each file for the
+White player and the seventh rank of each file for the
+Black player. With their first move, they can move one
+or two spaces forward (with the White player traveling
+up the board and the Black player traveling down the
+board.) For subsequent moves, a pawn may only move one space.
+
+A pawn must capture diagonally ahead, meaning that it
+cannot move straight forward onto an occupied space. It can
+also never jump over any other piece, nor move backward.
+
+When a pawn reaches the last rank (8 for the White player,
+1 for the Black player) it must promote into another piece.
+
+Last modified: 3/29/2018
+Author: Daniel Edades
+"""
+
 from piece import *
 from board import *
 from enum import Enum
