@@ -9,6 +9,7 @@ Author: Daniel Edades
 
 import sys
 import pytest
+import random
 sys.path.append("..")
 from board import Board
 from pawn import Pawn
@@ -18,7 +19,8 @@ from piece import IllegalMoveException
 
 MIN_RANK = 1
 MAX_RANK = 8
-
+RANKS = (1, 2, 3, 4, 5, 6, 7, 8)
+FILES = ("a", "b", "c", "d", "e", "f", "g", "h")
 
 @pytest.fixture
 def test_board():
@@ -67,16 +69,16 @@ class TestPawnPlace:
         """
 
         # Check that the intended Space is on the Board with the expected attributes.
-        expected_file = "e"
-        expected_rank = 2
+        expected_file = random.choice(FILES)
+        expected_rank = random.choice(RANKS)
         expected_name = expected_file + str(expected_rank)
 
         target_space = test_board.get_space(expected_file, expected_rank)
 
         assert target_space
-        assert target_space.file == "e"
-        assert target_space.rank == 2
-        assert target_space.name == "e2"
+        assert target_space.file == expected_file
+        assert target_space.rank == expected_rank
+        assert target_space.name == expected_name
 
         # Place a Pawn on the intended Space
         expected_color = PieceColor.WHITE
@@ -287,7 +289,7 @@ class TestPawnMove:
 # Capturing Tests
 class TestPawnCapture:
 
-    def test_white_capture_opposing_piece_left(self, test_board, white_test_pawn):
+    def test_white_capture_left(self, test_board, white_test_pawn):
         assert test_board
         assert white_test_pawn
         assert white_test_pawn.current_space.rank < MAX_RANK
@@ -313,7 +315,7 @@ class TestPawnCapture:
         # Check that the test Pawn is its Space's current piece
         assert target_space.current_piece is white_test_pawn
 
-    def test_white_capture_opposing_piece_right(self, test_board, white_test_pawn):
+    def test_white_capture_right(self, test_board, white_test_pawn):
         assert test_board
         assert white_test_pawn
         assert white_test_pawn.current_space.rank < MAX_RANK
@@ -339,39 +341,70 @@ class TestPawnCapture:
         # Check that the test Pawn is its Space's current piece
         assert target_space.current_piece is white_test_pawn
 
-    def test_capture_test_pawn_left(self, test_board, white_test_pawn):
+    def test_black_capture_left(self, test_board, black_test_pawn):
         assert test_board
-        assert white_test_pawn
+        assert black_test_pawn
 
-        opposing_pawn = Pawn(-(white_test_pawn.color.value))
-        capture_space = white_test_pawn.current_space
+        opposing_pawn = Pawn(-(black_test_pawn.color.value))
+        assert opposing_pawn
 
         # Place the opposing Pawn one space in front of and one space to the left of the test Pawn
-        target_file = chr(ord(white_test_pawn.current_space.file) - 1)
-        target_rank = white_test_pawn.current_space.rank - 1
+        target_file = chr(ord(black_test_pawn.current_space.file) - 1)
+        target_rank = chr(ord(black_test_pawn.current_space.rank) - 1)
         target_space = test_board.get_space(target_file, target_rank)
         opposing_pawn.place(target_space)
 
-        # Capture the test pawn with the opposing Pawn
-        opposing_pawn.capture(test_board, white_test_pawn.current_space)
+        # Capture the opposing Pawn with the test Pawn
+        black_test_pawn.capture(test_board, target_space)
 
-        # Check that the opposing Pawn is on the test Pawn's previous Space
-        assert opposing_pawn.current_space is capture_space
+        # Check that the test Pawn is on the opposing Pawn's previous Space
+        assert black_test_pawn.current_space is target_space
 
-        # Check that the test Pawn is off the board
-        assert white_test_pawn.current_space is None
+        # Check that the opposing Pawn has been removed from the board
+        assert opposing_pawn.current_space is None
 
-        # Check that the opposing Pawn is its Space's current peice
-        assert capture_space.current_piece is opposing_pawn
+        # Check that the test Pawn is its Space's current piece
+        assert target_space.current_piece is black_test_pawn
+
+    def test_black_capture_right(self, test_board, black_test_pawn):
+        assert test_board
+        assert black_test_pawn
+
+        opposing_pawn = Pawn(-(black_test_pawn.color.value))
+        assert opposing_pawn
+
+        # Place the opposing Pawn one space in front of and one space to the right of the test Pawn
+        target_file = chr(ord(black_test_pawn.current_space.file) + 1)
+        target_rank = chr(ord(black_test_pawn.current_space.rank) - 1)
+        target_space = test_board.get_space(target_file, target_rank)
+        opposing_pawn.place(target_space)
+
+        # Capture the opposing Pawn with the test Pawn
+        black_test_pawn.capture(test_board, target_space)
+
+        # Check that the test Pawn is on the opposing Pawn's previous Space
+        assert black_test_pawn.current_space is target_space
+
+        # Check that the opposing Pawn has been removed from the board
+        assert opposing_pawn.current_space is None
+
+        # Check that the Pawn is its Space's current piece
+        assert target_space.current_piece is black_test_pawn
 
 
 '''
     def test_enforce_only_capture_one_away(self):
         pass
 
-    def test_enforce_no_backward_capture(self):
+    def test_enforce_no_backward_capture_white(self):
+        pass
+        
+    def test_enforce_no_backward_capture_black(self):
         pass
 
-    def test_enforce_no_same_side_capture(self):
+    def test_enforce_no_same_side_capture_white(self):
+        pass
+        
+    def test_enforce_no_same_side_capture_black(self):
         pass
 '''
