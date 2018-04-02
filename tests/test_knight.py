@@ -30,9 +30,16 @@ def test_white_knight(test_board):
     starting_rank = 1
     starting_space = test_board.get_space(starting_file, starting_rank)
     test_knight = Knight(PieceColor.WHITE)
+    test_knight.place(starting_space)
     return test_knight
 
 
 class TestCreateKnight:
     def test_create_knight(self, test_board, test_white_knight):
         assert test_white_knight
+        assert test_white_knight.color is PieceColor.WHITE
+        starting_file = "g"
+        starting_rank = 1
+        starting_space = test_board.get_space(starting_file, starting_rank)
+        test_white_knight.place(starting_space)
+        assert test_white_knight.current_space is starting_space
