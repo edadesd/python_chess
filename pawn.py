@@ -114,9 +114,14 @@ class Pawn(Piece):
             else:
                 raise IllegalMoveException("A Pawn may only capture one space ahead diagonally.")
 
+        # TODO: Capture en passant
+        # Requires a Game class which keeps track of previous moves.
+
         else:
             raise IllegalMoveException("That piece is not on the board.")
 
-    def promote(self, board, target):
+    def promote(self, board, choice):
+        # TODO: Accept choice of promotion class
+        # Requires the other piece type classes.
         pass
 

@@ -3,7 +3,7 @@ Tests for the Pawn class to ensure correct
 placement, movement, capturing, and promotion
 behavior, as well as correct attributes upon creation.
 
-Last modified: 3/29/2018
+Last modified: 4/2/2018
 Author: Daniel Edades
 """
 
