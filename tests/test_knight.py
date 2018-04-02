@@ -34,8 +34,19 @@ def test_white_knight(test_board):
     return test_knight
 
 
+@pytest.fixture
+def test_black_knight(test_board):
+    starting_file = "b"
+    starting_rank = "8"
+    starting_space = test_board.get_space(starting_file, starting_rank)
+    test_knight = Knight(PieceColor.BLACK)
+    test_knight.place(starting_space)
+    return test_knight
+
+
 class TestCreateKnight:
-    def test_create_knight(self, test_board, test_white_knight):
+
+    def test_create_white_knight(self, test_board, test_white_knight):
         assert test_white_knight
         assert test_white_knight.color is PieceColor.WHITE
         starting_file = "g"
@@ -43,3 +54,12 @@ class TestCreateKnight:
         starting_space = test_board.get_space(starting_file, starting_rank)
         test_white_knight.place(starting_space)
         assert test_white_knight.current_space is starting_space
+
+    def test_create_black_knight(self, test_board, test_black_knight):
+        assert test_black_knight
+        assert test_black_knight.color is PieceColor.BLACK
+        starting_file = "g"
+        starting_rank = 8
+        starting_space = test_board.get_space(starting_file, starting_rank)
+        test_black_knight.place(starting_space)
+        assert test_black_knight.current_space is starting_space
