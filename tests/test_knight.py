@@ -37,7 +37,7 @@ def test_white_knight(test_board):
 @pytest.fixture
 def test_black_knight(test_board):
     starting_file = "b"
-    starting_rank = "8"
+    starting_rank = 8
     starting_space = test_board.get_space(starting_file, starting_rank)
     test_knight = Knight(PieceColor.BLACK)
     test_knight.place(starting_space)
