@@ -222,6 +222,30 @@ class TestMoveKnight:
             self.bad_knight_move(test_board, test_white_knight)
             assert "A Knight must move two spaces straight and one space perpendicular." in str(info)
 
+    def test_knight_jump(self, test_board, test_white_knight):
+        assert test_board
+        assert test_white_knight
+        assert test_white_knight.current_space
+
+        # Place Knights on the two spaces in front of the test Knight to check that the
+        # test Knight is able to jump over them, i.e. their presence along the Knight's movement
+        # path do not prevent the Knight from legally making the move.
+
+        current_space = test_white_knight.current_space
+        ahead = test_board.get_space(current_space.file, current_space.rank + 1)
+        two_ahead = test_board.get_space(current_space.file, current_space.rank + 2)
+        target = test_board.get_space(chr(ord(current_space.file) + 1), current_space.rank + 2)
+
+        first_obstacle_knight = Knight(PieceColor.WHITE)
+        first_obstacle_knight.place(ahead)
+        second_obstacle_knight = Knight(PieceColor.BLACK)
+        second_obstacle_knight.place(two_ahead)
+
+        test_white_knight.move(target)
+        assert test_white_knight.current_space is target
+        assert first_obstacle_knight.current_space is ahead
+        assert second_obstacle_knight.current_space is two_ahead
+
 
 class TestKnightCapture:
 
