@@ -17,8 +17,25 @@ class Knight(Piece):
         current = self.current_space
         vertical_moved = abs(target.rank - current.rank)
         horizontal_moved = abs(ord(target.file) - ord(current.file))
-        if (vertical_moved == 2 and horizontal_moved == 1 or
-                vertical_moved == 1 and horizontal_moved == 2):
+        if ((vertical_moved == 2 and horizontal_moved) == 1 or
+            (vertical_moved == 1 and horizontal_moved == 2)):
                 super().move(target)
         else:
             raise IllegalMoveException("A Knight must move two spaces straight and one space perpendicular.")
+
+    def capture(self, target):
+        """
+        A knight must capture in the same way as it moves:
+        by moving two squares up, down, left, or right, and
+        one square perpendicular to the direction of the
+        two squares thus forming an L.
+        """
+
+        current = self.current_space
+        vertical_moved = abs(target.rank - current.rank)
+        horizontal_moved = abs(ord(target.file) - ord(current.file))
+        if ((vertical_moved == 2 and horizontal_moved == 1) or
+            (vertical_moved == 1 and horizontal_moved == 2)):
+            super().capture(target)
+        else:
+                raise IllegalMoveException("A Knight must capture two spaces straight and one space perpendicular.")

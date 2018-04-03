@@ -255,4 +255,4 @@ class TestKnightCapture:
     def test_bad_knight_capture(self, test_board, test_white_knight, test_black_knight):
         with pytest.raises(IllegalMoveException) as info:
             self.bad_knight_capture(test_board, test_white_knight, test_black_knight)
-        assert "A Knight must move two spaces straight and one space perpendicular." in str(info)
+        assert "A Knight must capture two spaces straight and one space perpendicular." in str(info)
