@@ -40,7 +40,7 @@ def white_test_pawn(test_board):
     test_pawn.place(starting_space)
 
     assert test_pawn
-    assert test_pawn.current_space == starting_space
+    assert test_pawn.current_space is starting_space
 
     return test_pawn
 
@@ -54,7 +54,7 @@ def black_test_pawn(test_board):
     test_pawn.place(starting_space)
 
     assert test_pawn
-    assert test_pawn.current_space == starting_space
+    assert test_pawn.current_space is starting_space
 
     return test_pawn
 
