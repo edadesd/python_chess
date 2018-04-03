@@ -222,7 +222,37 @@ class TestMoveKnight:
             self.bad_knight_move(test_board, test_white_knight)
             assert "A Knight must move two spaces straight and one space perpendicular." in str(info)
 
-class TestCaptureKnight:
-    pass
 
-    # Test that the Knight can only capture by moving two Spaces straight in one direction and one Space perpendicular.
+class TestKnightCapture:
+
+    # Test that the Knight can capture by moving two Spaces straight in one direction and one Space perpendicular.
+    def test_knight_capture_up_right(self, test_board, test_white_knight, test_black_knight):
+        assert test_board
+        assert test_white_knight
+        assert test_black_knight
+        assert test_white_knight.current_space
+        assert test_white_knight.current_space.rank + 2 <= MAX_RANK
+        assert ord(test_white_knight.current_space.file) + 1 <= ord(MAX_FILE)
+
+        target_file = chr(ord(test_white_knight.current_space.file) + 1)
+        target_rank = test_white_knight.current_space.rank + 2
+        target_space = test_board.get_space(target_file, target_rank)
+
+        test_black_knight.place(target_space)
+
+        test_white_knight.capture(target_space)
+        assert test_white_knight.current_space is target_space
+        assert not test_black_knight.current_space
+
+    def bad_knight_capture(self, test_board, test_white_knight, test_black_knight):
+        assert test_board
+        assert test_white_knight
+        assert test_black_knight
+        assert test_black_knight.current_space
+
+        test_white_knight.capture(test_black_knight.current_space)
+
+    def test_bad_knight_capture(self, test_board, test_white_knight, test_black_knight):
+        with pytest.raises(IllegalMoveException) as info:
+            self.bad_knight_capture(test_board, test_white_knight, test_black_knight)
+        assert "A Knight must move two spaces straight and one space perpendicular." in str(info)
