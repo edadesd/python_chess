@@ -117,8 +117,7 @@ class TestMoveKnight:
         # Attempt to move the Knight to the target space, expecting this to cause an IllegalMoveException
         test_white_knight.move(target_space)
 
-
-
     def test_bad_knight_move(self, test_board, test_white_knight):
         with pytest.raises(IllegalMoveException) as info:
             self.bad_knight_move(test_board, test_white_knight)
+            assert "A Knight must move two spaces straight and one space perpendicular." in str(info)

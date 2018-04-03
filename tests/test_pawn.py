@@ -116,7 +116,6 @@ class TestRemovePawn:
         assert not original_space.current_piece
 
 
-
 # Movement Tests
 class TestPawnMove:
 
