@@ -1,9 +1,9 @@
 """
 Tests for the Knight class to ensure correct
-placement, movement, capturing, and promotion
-behavior, as well as correct attributes upon creation.
+placement, movement, and capturing,
+as well as correct attributes upon creation.
 
-Last modified: 4/2/2018
+Last modified: 4/3/2018
 Author: Daniel Edades
 """
 
@@ -11,16 +11,11 @@ import sys
 import pytest
 import random
 sys.path.append("..")
-from board import Board
+from board import *
 from knight import Knight
 from piece import PieceColor
 from piece import IllegalPlacementException
 from piece import IllegalMoveException
-
-MAX_RANK = 8
-MIN_RANK = 1
-MIN_FILE = "a"
-MAX_FILE = "h"
 
 
 @pytest.fixture
@@ -229,7 +224,8 @@ class TestMoveKnight:
 
         # Place Knights on the two spaces in front of the test Knight to check that the
         # test Knight is able to jump over them, i.e. their presence along the Knight's movement
-        # path do not prevent the Knight from legally making the move.
+        # path do not prevent the Knight from legally making the move, and that the
+        # pieces along the path remain where they were after the Knight is done with its move.
 
         current_space = test_white_knight.current_space
         ahead = test_board.get_space(current_space.file, current_space.rank + 1)
