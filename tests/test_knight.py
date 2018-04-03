@@ -167,12 +167,42 @@ class TestMoveKnight:
         target_rank = current_space.rank - 1
         target_space = test_board.get_space(target_file, target_rank)
 
-        print(target_space.file)
-        print(target_space.rank)
         test_black_knight.move(target_space)
         assert test_black_knight.current_space is target_space
 
-    # Test that the Knight can move two files right and one file down on a board with no other pieces.
+    # Test that the Knight can move two files left and one file up on a board with no other pieces.
+    def test_move_knight_left_up(self, test_board, test_white_knight):
+        assert test_board
+        assert test_white_knight
+        new_starting_space = test_board.get_space("g", 1)
+        test_white_knight.place(new_starting_space)
+        assert test_white_knight.current_space is new_starting_space
+        assert ord(test_white_knight.current_space.file) - 2 >= ord(MIN_FILE)
+        assert test_white_knight.current_space.rank + 1 <= MAX_RANK
+
+        target_file = chr(ord(new_starting_space.file) - 2)
+        target_rank = new_starting_space.rank + 1
+        target_space = test_board.get_space(target_file, target_rank)
+
+        test_white_knight.move(target_space)
+        assert test_white_knight.current_space is target_space
+
+    # Test that the Knight can move two files left and one file down on a board with no other pieces.
+    def test_move_knight_left_down(self, test_board, test_black_knight):
+        assert test_board
+        assert test_black_knight
+        new_starting_space = test_board.get_space("g", 8)
+        test_black_knight.place(new_starting_space)
+        assert test_black_knight.current_space is new_starting_space
+        assert ord(test_black_knight.current_space.file) - 2 >= ord(MIN_FILE)
+        assert test_black_knight.current_space.rank - 1 >= MIN_RANK
+
+        target_file = chr(ord(new_starting_space.file) - 2)
+        target_rank = new_starting_space.rank - 1
+        target_space = test_board.get_space(target_file, target_rank)
+
+        test_black_knight.move(target_space)
+        assert test_black_knight.current_space is target_space
 
     def bad_knight_move(self, test_board, test_white_knight):
         assert test_board
