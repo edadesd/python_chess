@@ -11,16 +11,13 @@ import sys
 import pytest
 import random
 sys.path.append("..")
-from board import Board
+from board import *
 from pawn import Pawn
 from piece import PieceColor
 from piece import IllegalPlacementException
 from piece import IllegalMoveException
 
-MIN_RANK = 1
-MAX_RANK = 8
-RANKS = (1, 2, 3, 4, 5, 6, 7, 8)
-FILES = ("a", "b", "c", "d", "e", "f", "g", "h")
+
 
 @pytest.fixture
 def test_board():
