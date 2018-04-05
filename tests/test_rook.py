@@ -107,3 +107,22 @@ class TestMoveRook:
     def test_bad_rook_move_horizontal(self, test_board, test_white_rook):
         with pytest.raises(IllegalMoveException) as info:
             self.bad_rook_move_horizontal(test_board, test_white_rook)
+        assert("A Rook cannot move over any other piece.") in str(info)
+
+    def bad_rook_move_vertical(self, test_board, test_black_rook):
+        assert test_board
+        assert test_black_rook
+        assert test_black_rook.current_space
+        assert test_black_rook.current_space.rank - 1 > MIN_RANK
+
+        target_space = test_board.get_space(test_black_rook.current_space.file, MIN_RANK)
+        obstacle_space = test_board.get_space(test_black_rook.current_space.file, MIN_RANK + 1)
+        obstacle_piece = Rook(PieceColor.WHITE)
+        obstacle_piece.place(obstacle_space)
+
+        test_black_rook.move(test_board, target_space)
+
+    def test_bad_rook_move_vertical(self, test_board, test_black_rook):
+        with pytest.raises(IllegalMoveException) as info:
+            self.bad_rook_move_vertical(test_board, test_black_rook)
+        assert("A Rook cannot move over any other piece.") in str(info)
