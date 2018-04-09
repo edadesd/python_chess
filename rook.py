@@ -64,3 +64,7 @@ class Rook(Piece):
                         super().move(target)
                     else:
                         raise IllegalMoveException("A Rook cannot move over any other piece.")
+                else:
+                    raise IllegalMoveException("A rook must move entirely vertically or entirely horizontally.")
+        else:
+            raise IllegalMoveException("A rook must move entirely vertically or entirely horizontally.")

@@ -160,11 +160,12 @@ class TestMoveRook:
         if current_space.rank != MIN_RANK or current_space.file != MIN_FILE:
             test_white_rook.place(MIN_FILE, MIN_RANK)
 
+        assert test_white_rook.current_space is test_board.get_space(MIN_FILE, MIN_RANK)
+
         # Move the test Rook to g8, which makes a large L but not a diagonal move.
-        test_white_rook.move(chr(ord(MAX_FILE) - 1), MAX_RANK)
+        test_white_rook.move(test_board, test_board.get_space(chr(ord(MAX_FILE) - 1), MAX_RANK))
 
     def test_bad_rook_move_large_l(self, test_board, test_white_rook):
         with pytest.raises(IllegalMoveException) as info:
-            self.test_bad_rook_move_diagonal(test_board, test_white_rook)
+            self.bad_rook_move_large_l(test_board, test_white_rook)
         assert "A rook must move entirely vertically or entirely horizontally." in str(info)
-
