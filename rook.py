@@ -23,8 +23,10 @@ class Rook(Piece):
                     legal_move = True
 
                     while traveled < abs(distance) and legal_move:
+                        # Moving in toward the H-file
                         if distance > 0:
                             target_file = chr(ord(self.current_space.file) + traveled + 1)
+                        # Moving toward the A-file
                         elif distance < 0:
                             target_file = chr(ord(self.current_space.file) - traveled - 1)
                         target_space = board.get_space(target_file, self.current_space.rank)
@@ -33,6 +35,32 @@ class Rook(Piece):
                         else:
                             traveled += 1
                     if legal_move:
-                        super().move(self, target)
+                        super().move(target)
+                    else:
+                        raise IllegalMoveException("A Rook cannot move over any other piece.")
+
+                elif target.rank != self.current_space.rank:
+
+                    # Vertical move
+                    distance = target.rank - self.current_space.rank
+                    traveled = 0
+
+                    legal_move = True
+
+                    while traveled < abs(distance) and legal_move:
+                        if distance > 0:
+                            # Moving toward rank 8
+                            target_rank = self.current_space.rank + traveled + 1
+
+                            # Moving toward rank 1
+                        elif distance < 0:
+                            target_rank = self.current_space.rank - traveled - 1
+                        target_space = board.get_space(self.current_space.file, target_rank)
+                        if target_space.current_piece:
+                            legal_move = False
+                        else:
+                            traveled += 1
+                    if legal_move:
+                        super().move(target)
                     else:
                         raise IllegalMoveException("A Rook cannot move over any other piece.")
