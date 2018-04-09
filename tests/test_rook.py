@@ -127,7 +127,7 @@ class TestMoveRook:
     def test_bad_rook_move_vertical(self, test_board, test_black_rook):
         with pytest.raises(IllegalMoveException) as info:
             self.bad_rook_move_vertical(test_board, test_black_rook)
-        assert("A Rook cannot move over any other piece.") in str(info)
+        assert "A Rook cannot move over any other piece." in str(info)
 
     # A Rook should not be able to move diagonally
 
@@ -147,4 +147,24 @@ class TestMoveRook:
     def test_bad_rook_move_diagonal(self, test_board, test_white_rook):
         with pytest.raises(IllegalMoveException) as info:
             self.bad_rook_move_diagonal(test_board, test_white_rook)
-        assert("A rook must move entirely vertically or entirely horizontally.") in str(info)
+        assert "A rook must move entirely vertically or entirely horizontally." in str(info)
+
+    # A Rook should not be able to move in an L pattern of any dimensions
+
+    def bad_rook_move_large_l(self, test_board, test_white_rook):
+        assert test_board
+        assert test_white_rook
+        assert test_white_rook.current_space
+        current_space = test_white_rook.current_space
+        # Place the test Rook on a1
+        if current_space.rank != MIN_RANK or current_space.file != MIN_FILE:
+            test_white_rook.place(MIN_FILE, MIN_RANK)
+
+        # Move the test Rook to g8, which makes a large L but not a diagonal move.
+        test_white_rook.move(chr(ord(MAX_FILE) - 1), MAX_RANK)
+
+    def test_bad_rook_move_large_l(self, test_board, test_white_rook):
+        with pytest.raises(IllegalMoveException) as info:
+            self.test_bad_rook_move_diagonal(test_board, test_white_rook)
+        assert "A rook must move entirely vertically or entirely horizontally." in str(info)
+
