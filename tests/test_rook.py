@@ -71,7 +71,7 @@ class TestCreateRook:
 
 class TestMoveRook:
 
-    def test_move_rook_horizontal(self, test_board, test_white_rook):
+    def test_move_rook_horizontal_right(self, test_board, test_white_rook):
         assert test_board
         assert test_white_rook
         assert test_white_rook.current_space
@@ -81,7 +81,17 @@ class TestMoveRook:
         test_white_rook.move(test_board, target_space)
         assert test_white_rook.current_space is target_space
 
-    def test_move_rook_vertical(self, test_board, test_black_rook):
+    def test_move_rook_horizontal_left(self, test_board, test_white_rook):
+        assert test_board
+        assert test_white_rook
+        starting_space = test_board.get_space(MAX_FILE, MIN_RANK)
+        test_white_rook.place(starting_space)
+
+        target_space = test_board.get_space(MIN_FILE, MIN_RANK)
+        test_white_rook.move(test_board, target_space)
+        assert test_white_rook.current_space is target_space
+
+    def test_move_rook_vertical_down(self, test_board, test_black_rook):
         assert test_board
         assert test_black_rook
         assert test_black_rook.current_space
@@ -90,6 +100,17 @@ class TestMoveRook:
         target_space = test_board.get_space(test_black_rook.current_space.file, MIN_RANK)
         test_black_rook.move(test_board, target_space)
         assert test_black_rook.current_space is target_space
+
+    def test_move_rook_vertical_up(self, test_board, test_white_rook):
+        assert test_board
+        assert test_white_rook
+        assert test_white_rook.current_space
+        assert test_white_rook.current_space.rank < MAX_RANK
+
+        target_space = test_board.get_space(test_white_rook.current_space.file, MAX_RANK)
+        test_white_rook.move(test_board, target_space)
+        assert test_white_rook.current_space is target_space
+
 
     # A Rook should not be able to move over any other pieces
 
